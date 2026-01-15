@@ -33,6 +33,7 @@ jobs:
 
       - name: Validate config.json
         id: validate-config
+        shell: bash
         run: |
           echo "Starting config validation..."
           
@@ -51,34 +52,39 @@ jobs:
           fi
           
           echo "✓ config.json has valid JSON syntax"
-          
-          # Check required Firebase keys
           echo "Checking required Firebase keys..."
-          python3 << 'EOF'
-import json
-import sys
-
-with open('config.json', 'r') as f:
-    config = json.load(f)
-
-required_keys = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId']
-for key in required_keys:
-    if key not in config:
-        print(f"❌ Missing required key: {key}")
-        sys.exit(1)
-    print(f"✓ Found {key}")
-
-print("✓ All Firebase keys present")
-
-# Check firewall config
-if 'firewall' in config:
-    print(f"✓ Firewall config detected")
-    print(f"✓ Firewall enabled: {config['firewall'].get('enabled', True)}")
-else:
-    print("⚠ Firewall config not found (optional)")
-
-print("\n✓✓✓ Config validation PASSED ✓✓✓")
-EOF
+          
+          python3 << 'VALIDATION_EOF'
+          import json
+          import sys
+          
+          with open('config.json', 'r') as f:
+              config = json.load(f)
+          
+          required_keys = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId']
+          missing = []
+          
+          for key in required_keys:
+              if key not in config:
+                  missing.append(key)
+                  print(f"❌ Missing required key: {key}")
+              else:
+                  print(f"✓ Found {key}")
+          
+          if missing:
+              sys.exit(1)
+          
+          print("\n✓ All Firebase keys present")
+          
+          # Check firewall config
+          if 'firewall' in config:
+              print(f"✓ Firewall config detected")
+              print(f"✓ Firewall enabled: {config['firewall'].get('enabled', True)}")
+          else:
+              print("⚠ Firewall config not found (optional)")
+          
+          print("\n✅✅✅ Config validation PASSED ✅✅✅")
+          VALIDATION_EOF
           
           echo "valid=true" >> $GITHUB_OUTPUT
 
@@ -101,6 +107,7 @@ EOF
         uses: actions/configure-pages@v5
 
       - name: Build artifact
+        shell: bash
         run: |
           echo "📦 Preparing deployment artifact..."
           echo "✓ All static files ready"
@@ -120,8 +127,9 @@ EOF
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deployment Status
+        shell: bash
         run: |
           echo "✅ Deployment Successful!"
           echo "📱 Live URL: https://IshanDigra.github.io/magic-pouch"
-          echo "🔒 Firewall enabled and configured"
+          echo "🔐 Firewall enabled and configured"
           echo "🛡️  Security headers active"
