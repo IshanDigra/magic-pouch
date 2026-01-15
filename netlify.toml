@@ -1,0 +1,12 @@
+# Netlify configuration for magic-pouch (static HTML app)
+# No build step needed - just serve the files as-is
+
+[build]
+  # No build command needed - this is a static HTML app
+  command = ""
+  publish = "/"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
