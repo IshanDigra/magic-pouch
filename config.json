@@ -1,9 +1,8 @@
 {
-  "apiKey": "YOUR_FIREBASE_API_KEY",
-  "authDomain": "your-project.firebaseapp.com",
-  "projectId": "your-project-id",
-  "storageBucket": "your-project.appspot.com",
-  "messagingSenderId": "123456789",
-  "appId": "1:123456789:web:abcdefghijklmnop",
-  "measurementId": "G-MEASUREMENT_ID"
+  apiKey: "AIzaSyD3GZnCEWotlYVHElhh3c5RmCKYjzSdhX8",
+  authDomain: "magic-pouch.firebaseapp.com",
+  projectId: "magic-pouch",
+  storageBucket: "magic-pouch.firebasestorage.app",
+  messagingSenderId: "816300585480",
+  appId: "1:816300585480:web:0ead89292305defb2c97bd"
 }
