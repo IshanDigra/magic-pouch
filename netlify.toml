@@ -1,13 +1,7 @@
-# Netlify configuration for magic-pouch (static HTML app)
-# No build step needed - just serve the files as-is from the repository root
-
 [build]
-  # Empty command - no build step needed for static HTML
   command = ""
-  # Publish from repository root where index.html lives
   publish = "."
 
-# Single Page App routing - redirect all 404s to index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"
