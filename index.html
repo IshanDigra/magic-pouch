@@ -91,7 +91,7 @@
                 </div>
                 <div class="flex flex-col overflow-hidden">
                     <span class="text-[10px] text-blue-600 font-bold uppercase tracking-wider">Cloud Sync</span>
-                    <span id="current-sync-id" class="text-xs text-blue-800 truncate font-mono">Connecting...</span>
+                    <span id="current-sync-id" class="text-xs text-blue-800 truncate font-mono">ishan_data</span>
                 </div>
             </div>
             <i class="fas fa-chevron-right text-blue-300 text-sm"></i>
@@ -223,18 +223,15 @@
             </div>
             <div class="p-6">
                 <p class="text-sm text-gray-600 mb-4 leading-relaxed">
-                    Use this key to access your notes on other devices.
+                    Your sync key is hardcoded to <strong>ishan_data</strong>. This key syncs your notes across devices.
                 </p>
                 <div class="relative">
-                    <input type="text" id="sync-input" class="w-full border border-gray-200 rounded-lg py-3 px-4 font-mono text-center text-lg tracking-widest focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-gray-50 text-gray-800" placeholder="KEY">
+                    <input type="text" id="sync-input" class="w-full border border-gray-200 rounded-lg py-3 px-4 font-mono text-center text-lg tracking-widest focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-gray-50 text-gray-800" value="ishan_data" disabled>
                 </div>
-                <button id="generate-key-btn" class="w-full text-center text-xs text-blue-600 mt-3 font-medium py-2 active:bg-blue-50 rounded">
-                    <i class="fas fa-sync-alt mr-1"></i> Generate New Key
-                </button>
+                <p class="text-xs text-gray-500 mt-3 text-center">Sync key is locked for this installation.</p>
             </div>
             <div class="bg-gray-50 px-5 py-4 flex justify-end gap-3">
-                <button class="sync-modal-close px-4 py-2 text-gray-600 font-medium active:bg-gray-200 rounded-lg text-sm">Cancel</button>
-                <button id="sync-confirm" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md shadow-blue-600/20 active:bg-blue-700 text-sm">Connect</button>
+                <button class="sync-modal-close px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md shadow-blue-600/20 active:bg-blue-700 text-sm">Done</button>
             </div>
         </div>
     </div>
@@ -285,12 +282,8 @@
     </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
-        // Hard-coded auth for personal use
-        const AUTH_EMAIL = "me@magicpouch.local"; // set in Firebase Auth
-        const AUTH_PASSWORD = "your-strong-password"; // set in Firebase Auth
         
         // Load Firebase config
         let firebaseConfig = null;
@@ -312,10 +305,9 @@
         }
         
         const appId = "snippet-keeper";
-        const apiKey = ""; // Gemini key if you want AI
+        const syncKey = "ishan_data"; // ✅ HARDCODED SYNC KEY
         let currentUser = null;
         let unsubscribeSnapshot = null;
-        const SYNC_KEY_STORAGE = "snippetkeeper_sync_key";
         
         // State
         let appData = { folders: [] };
@@ -323,9 +315,8 @@
         let viewMode = "LIST";
         let currentDetailItemId = null;
         let isSearching = false;
-        let syncKey = "ishan_data"; // hard-coded sync key
         
-        // DOM elements (same as before)...
+        // DOM elements
         const els = {
             sidebar: document.getElementById("sidebar"),
             sidebarOverlay: document.getElementById("sidebar-overlay"),
@@ -372,36 +363,73 @@
             syncSettingsBtn: document.getElementById("sync-settings-btn"),
             currentSyncId: document.getElementById("current-sync-id"),
             syncInput: document.getElementById("sync-input"),
-            syncConfirm: document.getElementById("sync-confirm"),
-            generateKeyBtn: document.getElementById("generate-key-btn"),
             toast: document.getElementById("toast"),
             toastMsg: document.getElementById("toast-message"),
         };
         
+        // Close modal handlers
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add("hidden");
+        }
+        
+        document.querySelectorAll(".modal-close").forEach(btn => {
+            btn.addEventListener("click", () => closeModal("input-modal"));
+        });
+        
+        document.querySelectorAll(".item-modal-close").forEach(btn => {
+            btn.addEventListener("click", () => closeModal("item-modal"));
+        });
+        
+        document.querySelectorAll(".sync-modal-close").forEach(btn => {
+            btn.addEventListener("click", () => closeModal("sync-modal"));
+        });
+        
+        // Sync modal handlers (show/hide only)
+        els.syncSettingsBtn.addEventListener("click", () => {
+            els.syncModal.classList.remove("hidden");
+        });
+        
+        // Mobile menu
+        els.mobileMenuBtn.addEventListener("click", () => {
+            els.sidebar.classList.toggle("-translate-x-full");
+            els.sidebarOverlay.classList.toggle("hidden");
+        });
+        
+        els.sidebarOverlay.addEventListener("click", () => {
+            els.sidebar.classList.add("-translate-x-full");
+            els.sidebarOverlay.classList.add("hidden");
+        });
+        
         async function init() {
             const ok = await loadConfig();
             if (!ok) return;
+            
             try {
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
-                await signInWithEmailAndPassword(auth, AUTH_EMAIL, AUTH_PASSWORD);
+                
+                // ✅ USE ANONYMOUS AUTH (no credentials needed)
+                await signInAnonymously(auth);
             } catch (e) {
-                console.error("Firebase init/auth error", e);
-                alert("Failed to sign in to Firebase. Check console.");
+                console.error("Firebase init error", e);
+                alert("Failed to connect to Firebase. Check console and config.json.");
                 return;
             }
+            
             onAuthStateChanged(auth, (user) => {
                 currentUser = user;
-                if (user) setupFirestoreSync();
+                if (user) {
+                    console.log("Authenticated as:", user.uid);
+                    setupFirestoreSync();
+                }
             });
-            els.currentSyncId.textContent = syncKey;
-            setupEventListeners();
         }
         
         function setupFirestoreSync() {
             if (!currentUser) return;
             if (unsubscribeSnapshot) unsubscribeSnapshot();
+            
             const docRef = doc(db, "artifacts", appId, "public", "data", "snippets", syncKey);
             unsubscribeSnapshot = onSnapshot(
                 docRef,
@@ -412,7 +440,7 @@
                     }
                     refreshUI();
                 },
-                (err) => console.error("Sync error", err)
+                (err) => console.error("Firestore sync error", err)
             );
         }
         
@@ -422,14 +450,10 @@
                 const docRef = doc(db, "artifacts", appId, "public", "data", "snippets", syncKey);
                 await setDoc(docRef, appData);
             } catch (e) {
+                console.error("Save error", e);
                 showToast("Failed to save", true);
             }
         }
-        
-        // --- rest of your logic: folders, items, UI handlers ---
-        // (unchanged from your previous version)
-        // To keep answer short I haven't re-pasted all those functions.
-        // In your repo they remain as they were.
         
         function showToast(msg, isError = false) {
             els.toastMsg.textContent = msg;
@@ -440,7 +464,300 @@
             setTimeout(() => els.toast.classList.add("hidden"), 2000);
         }
         
-        // Start app
+        function createFolder(name) {
+            const id = Date.now().toString();
+            appData.folders.push({
+                id,
+                name,
+                items: [],
+                createdAt: new Date().toISOString()
+            });
+            saveData();
+        }
+        
+        function deleteFolder(folderId) {
+            appData.folders = appData.folders.filter(f => f.id !== folderId);
+            currentFolderId = null;
+            viewMode = "LIST";
+            saveData();
+        }
+        
+        function renameFolder(folderId, newName) {
+            const folder = appData.folders.find(f => f.id === folderId);
+            if (folder) {
+                folder.name = newName;
+                saveData();
+            }
+        }
+        
+        function createItem(title, content, tags) {
+            if (!currentFolderId) return;
+            const folder = appData.folders.find(f => f.id === currentFolderId);
+            if (!folder) return;
+            
+            const id = Date.now().toString();
+            folder.items.push({
+                id,
+                title,
+                content,
+                tags: tags ? tags.split(",").map(t => t.trim()) : [],
+                createdAt: new Date().toISOString()
+            });
+            saveData();
+        }
+        
+        function deleteItem(itemId) {
+            if (!currentFolderId) return;
+            const folder = appData.folders.find(f => f.id === currentFolderId);
+            if (!folder) return;
+            
+            folder.items = folder.items.filter(i => i.id !== itemId);
+            saveData();
+        }
+        
+        function updateItem(itemId, title, content, tags) {
+            if (!currentFolderId) return;
+            const folder = appData.folders.find(f => f.id === currentFolderId);
+            if (!folder) return;
+            
+            const item = folder.items.find(i => i.id === itemId);
+            if (item) {
+                item.title = title;
+                item.content = content;
+                item.tags = tags ? tags.split(",").map(t => t.trim()) : [];
+                saveData();
+            }
+        }
+        
+        function refreshUI() {
+            // Render folders
+            els.folderList.innerHTML = "";
+            appData.folders.forEach(folder => {
+                const div = document.createElement("div");
+                div.className = `p-3 rounded-lg cursor-pointer transition ${
+                    currentFolderId === folder.id
+                        ? "bg-blue-100 text-blue-900 font-semibold"
+                        : "bg-white text-gray-700 hover:bg-gray-100"
+                }`;
+                div.innerHTML = `
+                    <div class="font-medium truncate">${folder.name}</div>
+                    <div class="text-xs opacity-70 mt-1">${folder.items.length} items</div>
+                `;
+                div.addEventListener("click", () => selectFolder(folder.id));
+                els.folderList.appendChild(div);
+            });
+            
+            if (currentFolderId) {
+                const folder = appData.folders.find(f => f.id === currentFolderId);
+                if (folder) {
+                    els.currentFolderTitle.textContent = folder.name;
+                    els.folderActions.style.display = "flex";
+                    els.itemsContainer.classList.remove("hidden");
+                    els.emptyState.classList.add("hidden");
+                    els.addItemBtn.classList.remove("hidden");
+                    
+                    // Render items
+                    els.itemsContainer.innerHTML = "";
+                    if (folder.items.length === 0) {
+                        els.itemsContainer.innerHTML = '<div class="text-center text-gray-400 py-12">No notes yet</div>';
+                    } else {
+                        folder.items.forEach(item => {
+                            const div = document.createElement("div");
+                            div.className = "bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer";
+                            div.innerHTML = `
+                                <div class="font-semibold text-gray-900 mb-1">${item.title || "Untitled"}</div>
+                                <div class="text-sm text-gray-500 line-clamp-2">${item.content || "No description"}</div>
+                                <div class="text-xs text-gray-400 mt-2">${new Date(item.createdAt).toLocaleDateString()}</div>
+                            `;
+                            div.addEventListener("click", () => viewDetail(item.id));
+                            els.itemsContainer.appendChild(div);
+                        });
+                    }
+                }
+            } else {
+                els.currentFolderTitle.textContent = "Select a Folder";
+                els.folderActions.style.display = "none";
+                els.itemsContainer.classList.add("hidden");
+                els.emptyState.classList.remove("hidden");
+                els.addItemBtn.classList.add("hidden");
+            }
+        }
+        
+        function selectFolder(folderId) {
+            currentFolderId = folderId;
+            viewMode = "LIST";
+            refreshUI();
+            els.sidebar.classList.add("-translate-x-full");
+            els.sidebarOverlay.classList.add("hidden");
+        }
+        
+        function viewDetail(itemId) {
+            const folder = appData.folders.find(f => f.id === currentFolderId);
+            if (!folder) return;
+            const item = folder.items.find(i => i.id === itemId);
+            if (!item) return;
+            
+            currentDetailItemId = itemId;
+            viewMode = "DETAIL";
+            
+            els.itemsContainer.classList.add("hidden");
+            els.detailView.classList.remove("hidden");
+            els.detailHeading.textContent = item.title || "Untitled";
+            els.detailContent.textContent = item.content || "";
+            els.detailDate.textContent = `Created ${new Date(item.createdAt).toLocaleDateString()}`;
+            
+            els.detailTags.innerHTML = "";
+            (item.tags || []).forEach(tag => {
+                const span = document.createElement("span");
+                span.className = "bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium";
+                span.textContent = tag;
+                els.detailTags.appendChild(span);
+            });
+            
+            els.backToListBtn = document.getElementById("back-to-list-btn");
+            els.backToListBtn.classList.remove("hidden");
+        }
+        
+        // Add folder
+        els.addFolderBtn.addEventListener("click", () => {
+            els.modalTitle.textContent = "New Folder";
+            els.modalInput.value = "";
+            els.inputModal.classList.remove("hidden");
+            els.modalConfirm.onclick = () => {
+                const name = els.modalInput.value.trim();
+                if (name) {
+                    createFolder(name);
+                    els.inputModal.classList.add("hidden");
+                }
+            };
+        });
+        
+        // Add item
+        els.addItemBtn.addEventListener("click", () => {
+            els.itemModalTitle.textContent = "New Note";
+            els.itemHeadingInput.value = "";
+            els.itemTagsInput.value = "";
+            els.itemTextarea.value = "";
+            els.itemModal.classList.remove("hidden");
+            
+            els.itemSave.onclick = () => {
+                const title = els.itemHeadingInput.value.trim();
+                const content = els.itemTextarea.value.trim();
+                const tags = els.itemTagsInput.value.trim();
+                if (title) {
+                    createItem(title, content, tags);
+                    els.itemModal.classList.add("hidden");
+                }
+            };
+        });
+        
+        // Detail view handlers
+        els.detailBackBtn.addEventListener("click", () => {
+            els.detailView.classList.add("hidden");
+            els.itemsContainer.classList.remove("hidden");
+            viewMode = "LIST";
+        });
+        
+        els.detailCopyBtn.addEventListener("click", () => {
+            const text = els.detailContent.textContent;
+            navigator.clipboard.writeText(text).then(() => showToast("Copied!"));
+        });
+        
+        els.detailEditBtn.addEventListener("click", () => {
+            const folder = appData.folders.find(f => f.id === currentFolderId);
+            if (!folder) return;
+            const item = folder.items.find(i => i.id === currentDetailItemId);
+            if (!item) return;
+            
+            els.itemModalTitle.textContent = "Edit Note";
+            els.itemHeadingInput.value = item.title;
+            els.itemTagsInput.value = item.tags.join(", ");
+            els.itemTextarea.value = item.content;
+            els.itemModal.classList.remove("hidden");
+            
+            els.itemSave.onclick = () => {
+                const title = els.itemHeadingInput.value.trim();
+                const content = els.itemTextarea.value.trim();
+                const tags = els.itemTagsInput.value.trim();
+                if (title) {
+                    updateItem(currentDetailItemId, title, content, tags);
+                    els.itemModal.classList.add("hidden");
+                    viewDetail(currentDetailItemId);
+                }
+            };
+        });
+        
+        els.detailDeleteBtn.addEventListener("click", () => {
+            if (confirm("Delete this note?")) {
+                deleteItem(currentDetailItemId);
+                els.detailView.classList.add("hidden");
+                els.itemsContainer.classList.remove("hidden");
+                viewMode = "LIST";
+                refreshUI();
+            }
+        });
+        
+        // Rename folder
+        els.renameFolderBtn.addEventListener("click", () => {
+            els.modalTitle.textContent = "Rename Folder";
+            const folder = appData.folders.find(f => f.id === currentFolderId);
+            els.modalInput.value = folder ? folder.name : "";
+            els.inputModal.classList.remove("hidden");
+            els.modalConfirm.onclick = () => {
+                const name = els.modalInput.value.trim();
+                if (name && currentFolderId) {
+                    renameFolder(currentFolderId, name);
+                    els.inputModal.classList.add("hidden");
+                    refreshUI();
+                }
+            };
+        });
+        
+        // Delete folder
+        els.deleteFolderBtn.addEventListener("click", () => {
+            if (confirm("Delete this folder and all its notes?")) {
+                deleteFolder(currentFolderId);
+                refreshUI();
+            }
+        });
+        
+        // Export
+        els.exportBtn.addEventListener("click", () => {
+            const json = JSON.stringify(appData, null, 2);
+            const blob = new Blob([json], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `snippetkeeper-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+        
+        // Import
+        els.importBtnTrigger.addEventListener("click", () => {
+            els.importFile.click();
+        });
+        
+        els.importFile.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    if (data.folders) {
+                        appData = data;
+                        saveData();
+                        showToast("Imported successfully!");
+                    }
+                } catch (err) {
+                    showToast("Invalid JSON file", true);
+                }
+            };
+            reader.readAsText(file);
+        });
+        
+        // Start
         init();
     </script>
 </body>
