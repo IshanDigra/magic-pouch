@@ -6,6 +6,11 @@ config.json
 config.*.json
 !config.example.json
 
+# Local development secrets
+.env.development.local
+.env.production.local
+.env.test.local
+
 # IDE & Editor
 .vscode/
 .idea/
