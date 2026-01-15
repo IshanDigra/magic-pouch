@@ -1,0 +1,2 @@
+# Netlify _redirects file for single-page app routing
+/* /index.html 200
