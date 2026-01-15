@@ -10,12 +10,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* Enhanced Design System */
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1e40af;
+            --primary-light: #dbeafe;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
         /* Mobile Optimization: Native App Feel */
         body {
-            overscroll-behavior-y: none; /* Prevent pull-to-refresh on mobile web */
-            -webkit-tap-highlight-color: transparent; /* Remove blue tap box */
+            overscroll-behavior-y: none;
+            -webkit-tap-highlight-color: transparent;
             touch-action: pan-x pan-y;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
         }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         /* Safe Area for Notched Phones */
         .safe-pb {
             padding-bottom: env(safe-area-inset-bottom);
@@ -23,263 +40,562 @@
         .safe-pt {
             padding-top: env(safe-area-inset-top);
         }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 4px; /* Thinner on mobile */
-            height: 4px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: transparent; 
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; 
-            border-radius: 4px;
+            background: #cbd5e1;
+            border-radius: 3px;
         }
-        /* Mobile Sidebar Transitions */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Smooth Transitions */
         .sidebar-transition {
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        /* Loading Spinner */
+
+        /* Enhanced Loading Spinner */
         .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3b82f6;
+            width: 24px;
+            height: 24px;
+            border: 2.5px solid rgba(59, 130, 246, 0.2);
+            border-top-color: #3b82f6;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
+
+        /* Smooth Gradient Background */
+        .gradient-bg {
+            background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 100%);
+        }
+
+        /* Card Hover Effects */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Button Animations */
+        .btn-press {
+            transition: all 0.15s ease-out;
+        }
+
+        .btn-press:active {
+            transform: scale(0.95);
+        }
+
+        /* Focus Ring */
+        .focus-ring {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 0 0 1.5px #3b82f6;
+        }
+
+        /* Input Focus Animation */
+        input:focus,
+        textarea:focus,
+        select:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        }
+
         /* Prevent Input Zoom on iOS */
         @media screen and (max-width: 768px) {
             input, textarea, select {
                 font-size: 16px !important;
             }
         }
+
+        /* Badge Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pulse-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Smooth Modal Fade */
+        .modal-fade {
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Smooth Slide In */
+        .slide-in {
+            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Tag Styles */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            color: #1e40af;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .tag:hover {
+            background: linear-gradient(135deg, #bfdbfe 0%, #c7d2fe 100%);
+            transform: scale(1.05);
+        }
+
+        /* Better FAB */
+        .fab {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fab:active {
+            transform: scale(0.9);
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Icon Button Hover */
+        .icon-btn {
+            transition: all 0.2s ease;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            transform: scale(1.1);
+        }
+
+        .icon-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Folder Item Styles */
+        .folder-item {
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+        }
+
+        .folder-item:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .folder-item.active {
+            background: linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Item Card Styles */
+        .item-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.875rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #3b82f6);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .item-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .item-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Header Glassmorphism */
+        .header-glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        /* Sync Status Badge */
+        .sync-badge {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .sync-badge:hover {
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            transform: translateY(-1px);
+        }
+
+        /* Better Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.625rem 1rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1.5px solid #e2e8f0;
+            color: #64748b;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            padding: 0.625rem 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.95);
+        }
+
+        /* Empty State */
+        .empty-state-icon {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Modal Backdrop */
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        /* Keyboard */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-50 h-screen flex overflow-hidden text-gray-800 font-sans selection:bg-blue-100 selection:text-blue-900">
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 h-screen flex overflow-hidden text-gray-800 font-sans selection:bg-blue-100 selection:text-blue-900">
     <!-- Mobile Header -->
-    <div class="md:hidden fixed top-0 w-full bg-white border-b border-gray-200 z-20 h-14 flex items-center justify-between px-4 shadow-sm safe-pt">
-        <button id="mobile-menu-btn" class="text-gray-600 active:text-blue-600 p-2 -ml-2 rounded-full active:bg-gray-100 transition">
+    <div class="md:hidden fixed top-0 w-full header-glass z-20 h-14 flex items-center justify-between px-4 shadow-sm safe-pt">
+        <button id="mobile-menu-btn" class="icon-btn text-gray-600 hover:text-blue-600">
             <i class="fas fa-bars text-xl"></i>
         </button>
-        <h1 class="text-lg font-bold text-gray-800">SnippetKeeper</h1>
-        <div class="w-8"></div> <!-- Spacer -->
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">S</div>
+            <h1 class="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">SnippetKeeper</h1>
+        </div>
+        <div class="w-8"></div>
     </div>
+
     <!-- Sidebar Overlay (Mobile) -->
-    <div id="sidebar-overlay" class="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30 hidden backdrop-blur-sm transition-opacity duration-300"></div>
+    <div id="sidebar-overlay" class="md:hidden fixed inset-0 bg-black bg-opacity-40 z-30 hidden modal-backdrop transition-all duration-300"></div>
+
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed md:relative inset-y-0 left-0 w-80 bg-white border-r border-gray-200 transform -translate-x-full md:translate-x-0 z-40 flex flex-col sidebar-transition h-full shadow-2xl md:shadow-none safe-pb">
+    <aside id="sidebar" class="fixed md:relative inset-y-0 left-0 w-80 bg-white transform -translate-x-full md:translate-x-0 z-40 flex flex-col sidebar-transition h-full md:shadow-lg safe-pb">
         
         <!-- Sidebar Header -->
-        <div class="p-4 border-b border-gray-200 flex justify-between items-center h-16 bg-gray-50 md:mt-0 mt-safe-top">
-            <h2 class="font-bold text-xl text-gray-700 flex items-center gap-2">
-                <i class="fas fa-layer-group text-blue-600"></i> Folders
+        <div class="p-4 border-b border-gray-100 flex justify-between items-center h-16 bg-gradient-to-r from-blue-50 to-purple-50 md:mt-0 mt-safe-top">
+            <h2 class="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-2">
+                <i class="fas fa-layer-group"></i> Folders
             </h2>
-            <button id="add-folder-btn" class="text-blue-600 bg-blue-50 hover:bg-blue-100 active:bg-blue-200 p-2.5 rounded-full transition shadow-sm w-10 h-10 flex items-center justify-center" title="New Folder">
+            <button id="add-folder-btn" class="icon-btn bg-gradient-to-br from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-md hover:shadow-lg" title="New Folder">
                 <i class="fas fa-plus"></i>
             </button>
         </div>
+
         <!-- Sync Status -->
-        <div class="px-4 py-3 bg-blue-50 border-b border-blue-100 flex items-center justify-between cursor-pointer active:bg-blue-100 transition" id="sync-settings-btn">
+        <div class="px-4 py-3 sync-badge mx-3 mt-3 cursor-pointer" id="sync-settings-btn">
             <div class="flex items-center gap-3 overflow-hidden">
-                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                    <i class="fas fa-cloud text-blue-500 text-xs"></i>
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shrink-0 pulse-dot">
+                    <i class="fas fa-cloud text-white text-xs"></i>
                 </div>
                 <div class="flex flex-col overflow-hidden">
                     <span class="text-[10px] text-blue-600 font-bold uppercase tracking-wider">Cloud Sync</span>
                     <span id="current-sync-id" class="text-xs text-blue-800 truncate font-mono">ishan_data</span>
                 </div>
             </div>
-            <i class="fas fa-chevron-right text-blue-300 text-sm"></i>
+            <i class="fas fa-chevron-right text-blue-300 text-sm absolute right-4 top-1/2 -translate-y-1/2"></i>
         </div>
+
         <!-- Folder List -->
-        <div id="folder-list" class="flex-1 overflow-y-auto p-3 space-y-2">
-            <!-- Folders will be injected here -->
+        <div id="folder-list" class="flex-1 overflow-y-auto p-3 space-y-1.5">
             <div class="flex flex-col items-center justify-center h-40">
                 <div class="loader mb-2"></div>
                 <span class="text-xs text-gray-400">Loading...</span>
             </div>
         </div>
-        <!-- Sidebar Footer (Data Management) -->
-        <div class="p-4 border-t border-gray-200 bg-gray-50 safe-pb">
-            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Backup & Restore</h3>
-            <div class="flex gap-3">
-                <button id="export-btn" class="flex-1 bg-white border border-gray-300 active:bg-gray-50 text-gray-700 text-xs py-2.5 px-2 rounded-lg shadow-sm transition flex items-center justify-center gap-2 font-medium">
-                    <i class="fas fa-download text-gray-400"></i> Export
+
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t border-gray-100 bg-gradient-to-r from-slate-50 to-blue-50 safe-pb">
+            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Data Management</h3>
+            <div class="flex gap-2.5">
+                <button id="export-btn" class="flex-1 btn-secondary text-xs py-2.5 px-2 rounded-lg flex items-center justify-center gap-2 font-medium">
+                    <i class="fas fa-download"></i> Export
                 </button>
-                <button id="import-btn-trigger" class="flex-1 bg-white border border-gray-300 active:bg-gray-50 text-gray-700 text-xs py-2.5 px-2 rounded-lg shadow-sm transition flex items-center justify-center gap-2 font-medium">
-                    <i class="fas fa-upload text-gray-400"></i> Import
+                <button id="import-btn-trigger" class="flex-1 btn-secondary text-xs py-2.5 px-2 rounded-lg flex items-center justify-center gap-2 font-medium">
+                    <i class="fas fa-upload"></i> Import
                 </button>
                 <input type="file" id="import-file" class="hidden" accept=".json">
             </div>
         </div>
     </aside>
+
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col h-full w-full pt-14 md:pt-0 relative bg-gray-50">
+    <main class="flex-1 flex flex-col h-full w-full pt-14 md:pt-0 relative">
         
         <!-- Main Header -->
-        <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4 md:px-6 shadow-sm shrink-0 gap-3 z-10">
+        <header class="header-glass h-16 flex items-center justify-between px-4 md:px-6 shadow-sm shrink-0 gap-3 z-10">
             <div class="flex items-center gap-3 overflow-hidden flex-1">
-                <button id="back-to-list-btn" class="hidden text-gray-500 hover:text-blue-600 transition md:hidden p-2 -ml-2">
+                <button id="back-to-list-btn" class="hidden text-gray-500 hover:text-blue-600 transition md:hidden icon-btn">
                     <i class="fas fa-arrow-left text-lg"></i>
                 </button>
                 <h2 id="current-folder-title" class="text-lg md:text-xl font-bold truncate text-gray-800">Select a Folder</h2>
             </div>
-            <!-- Search Bar (Desktop: Visible, Mobile: Icon toggles) -->
+
+            <!-- Search Bar (Desktop) -->
             <div id="search-container" class="flex-1 max-w-md hidden md:block">
                 <div class="relative group">
-                    <input type="text" id="search-input" placeholder="Search notes..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-all">
+                    <input type="text" id="search-input" placeholder="Search notes..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-gray-50 focus:bg-white transition-all">
                     <i class="fas fa-search absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
                 </div>
             </div>
             
             <!-- Mobile Search Toggle -->
-            <button id="mobile-search-toggle" class="md:hidden p-2 text-gray-500 active:text-blue-600 rounded-full active:bg-gray-100">
+            <button id="mobile-search-toggle" class="md:hidden icon-btn text-gray-500 hover:text-blue-600">
                 <i class="fas fa-search"></i>
             </button>
+
             <div class="flex gap-1 shrink-0" id="folder-actions" style="display: none;">
-                <button id="rename-folder-btn" class="text-gray-400 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition">
+                <button id="rename-folder-btn" class="icon-btn text-gray-400 hover:text-blue-600 hover:bg-blue-50">
                     <i class="fas fa-pen"></i>
                 </button>
-                <button id="delete-folder-btn" class="text-gray-400 hover:text-red-600 p-2 rounded-full hover:bg-red-50 transition">
+                <button id="delete-folder-btn" class="icon-btn text-gray-400 hover:text-red-600 hover:bg-red-50">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </div>
         </header>
-        <!-- Mobile Search Bar (Overlay) -->
-        <div id="mobile-search-bar" class="md:hidden bg-white border-b border-gray-200 p-2 hidden absolute top-14 left-0 w-full z-10 shadow-md">
+
+        <!-- Mobile Search Bar -->
+        <div id="mobile-search-bar" class="md:hidden bg-white border-b border-gray-200 p-3 hidden absolute top-14 left-0 w-full z-10 shadow-sm">
             <div class="relative">
                 <input type="text" id="mobile-search-input" placeholder="Search notes, tags..." class="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-none rounded-lg text-base focus:ring-2 focus:ring-blue-500">
                 <i class="fas fa-search absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
             </div>
         </div>
+
         <!-- Empty State -->
         <div id="empty-state" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-6 text-center">
-            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <i class="fas fa-folder-open text-3xl text-gray-300"></i>
+            <div class="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center mb-6">
+                <i class="fas fa-folder-open empty-state-icon"></i>
             </div>
-            <p class="text-lg font-medium text-gray-600">No Folder Selected</p>
-            <p class="text-sm mt-1">Select a folder from the menu to start.</p>
+            <p class="text-lg font-semibold text-gray-600">No Folder Selected</p>
+            <p class="text-sm mt-2 text-gray-500">Select a folder from the sidebar to begin</p>
         </div>
+
         <!-- Items List View -->
         <div id="items-container" class="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 hidden pb-24 md:pb-6 safe-pb">
             <!-- Items injected here -->
         </div>
+
         <!-- Single Item Detail View -->
         <div id="detail-view" class="flex-1 overflow-y-auto hidden bg-white safe-pb">
             <div class="max-w-3xl mx-auto min-h-full flex flex-col">
                 <!-- Detail Toolbar -->
-                <div class="sticky top-0 bg-white/95 backdrop-blur border-b border-gray-100 px-4 py-3 flex justify-between items-center z-10">
-                     <button id="detail-back-btn" class="text-gray-500 active:text-blue-600 flex items-center gap-1 font-medium px-2 py-1 -ml-2 rounded-lg active:bg-gray-100">
+                <div class="sticky top-0 header-glass px-4 py-3 flex justify-between items-center z-10 border-b border-gray-100">
+                     <button id="detail-back-btn" class="text-gray-500 active:text-blue-600 flex items-center gap-1 font-medium px-3 py-2 rounded-lg icon-btn hover:bg-gray-100">
                         <i class="fas fa-chevron-left"></i> Back
                     </button>
                     <div class="flex gap-1">
-                         <button id="detail-copy-btn" class="w-10 h-10 flex items-center justify-center rounded-full text-gray-500 active:text-green-600 active:bg-green-50 transition">
+                         <button id="detail-copy-btn" class="w-10 h-10 flex items-center justify-center rounded-full icon-btn text-gray-500 hover:text-green-600 hover:bg-green-50">
                             <i class="fas fa-copy"></i>
                         </button>
-                        <button id="detail-edit-btn" class="w-10 h-10 flex items-center justify-center rounded-full text-gray-500 active:text-blue-600 active:bg-blue-50 transition">
+                        <button id="detail-edit-btn" class="w-10 h-10 flex items-center justify-center rounded-full icon-btn text-gray-500 hover:text-blue-600 hover:bg-blue-50">
                             <i class="fas fa-pen"></i>
                         </button>
-                        <button id="detail-delete-btn" class="w-10 h-10 flex items-center justify-center rounded-full text-gray-500 active:text-red-600 active:bg-red-50 transition">
+                        <button id="detail-delete-btn" class="w-10 h-10 flex items-center justify-center rounded-full icon-btn text-gray-500 hover:text-red-600 hover:bg-red-50">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </div>
                 
                 <div class="p-5 md:p-8 flex-1">
-                    <h1 id="detail-heading" class="text-2xl md:text-3xl font-bold text-gray-900 break-words mb-4 leading-tight"></h1>
+                    <h1 id="detail-heading" class="text-3xl md:text-4xl font-bold text-gray-900 break-words mb-5 leading-tight"></h1>
                     
                     <div id="detail-tags" class="flex flex-wrap gap-2 mb-6">
                         <!-- Tags injected here -->
                     </div>
                     
-                    <div class="w-full h-px bg-gray-100 mb-6"></div>
-                    <div id="detail-content" class="prose prose-lg text-gray-700 whitespace-pre-wrap leading-relaxed max-w-none">
+                    <div class="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-6"></div>
+                    <div id="detail-content" class="text-gray-700 whitespace-pre-wrap leading-relaxed max-w-none text-base md:text-lg">
                         <!-- Content injected here -->
                     </div>
                     
-                    <div class="mt-12 text-xs text-gray-400 font-mono" id="detail-date"></div>
+                    <div class="mt-12 text-xs text-gray-400 font-mono bg-gray-50 rounded-lg p-3" id="detail-date"></div>
                 </div>
             </div>
         </div>
+
         <!-- Add Item FAB -->
-        <button id="add-item-btn" class="hidden fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-blue-600 text-white w-14 h-14 rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center text-2xl transition transform active:scale-95 focus:outline-none z-20 safe-pb">
-            <i class="fas fa-plus"></i>
+        <button id="add-item-btn" class="hidden fixed bottom-6 right-6 md:bottom-8 md:right-8 fab flex items-center justify-center text-2xl focus:outline-none z-20 safe-pb btn-press">
+            <i class="fas fa-plus text-white"></i>
         </button>
     </main>
+
     <!-- Modals -->
     <!-- Sync Settings Modal -->
-    <div id="sync-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm overflow-hidden transform transition-all scale-100">
-            <div class="bg-gray-50 px-5 py-4 border-b border-gray-100 flex justify-between items-center">
-                <h3 class="font-bold text-gray-800">Cloud Sync</h3>
-                <button class="sync-modal-close w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-200">
+    <div id="sync-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden modal-fade">
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-bold text-lg text-gray-800">Cloud Sync</h3>
+                <button class="sync-modal-close w-8 h-8 flex items-center justify-center rounded-full icon-btn text-gray-400 hover:bg-gray-200">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="p-6">
-                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
-                    Your sync key is hardcoded to <strong>ishan_data</strong>. This key syncs your notes across devices.
+                <p class="text-sm text-gray-600 mb-5 leading-relaxed">
+                    Your sync key is hardcoded to <strong class="text-blue-600">ishan_data</strong>. This key syncs your notes across devices.
                 </p>
                 <div class="relative">
-                    <input type="text" id="sync-input" class="w-full border border-gray-200 rounded-lg py-3 px-4 font-mono text-center text-lg tracking-widest focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-gray-50 text-gray-800" value="ishan_data" disabled>
+                    <input type="text" id="sync-input" class="w-full border border-gray-200 rounded-lg py-3 px-4 font-mono text-center text-lg tracking-widest focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-blue-50 text-gray-800" value="ishan_data" disabled>
                 </div>
-                <p class="text-xs text-gray-500 mt-3 text-center">Sync key is locked for this installation.</p>
+                <p class="text-xs text-gray-500 mt-4 text-center">Sync key is locked for this installation.</p>
             </div>
-            <div class="bg-gray-50 px-5 py-4 flex justify-end gap-3">
-                <button class="sync-modal-close px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md shadow-blue-600/20 active:bg-blue-700 text-sm">Done</button>
+            <div class="bg-gray-50 px-6 py-4 flex justify-end gap-3 border-t border-gray-100">
+                <button class="sync-modal-close px-6 py-2.5 btn-primary text-sm">Done</button>
             </div>
         </div>
     </div>
+
     <!-- Generic Input Modal -->
-    <div id="input-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm transform transition-all">
+    <div id="input-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm modal-fade">
             <div class="p-6 pb-0">
-                <h3 id="modal-title" class="text-lg font-bold text-gray-900 mb-4">Title</h3>
-                <input type="text" id="modal-input" class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Enter name...">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-900 mb-5">Title</h3>
+                <input type="text" id="modal-input" class="w-full border border-gray-200 rounded-lg p-3.5 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" placeholder="Enter name...">
             </div>
             <div class="p-6 flex justify-end gap-3">
-                <button class="modal-close px-4 py-2 text-gray-500 font-medium active:bg-gray-100 rounded-lg">Cancel</button>
-                <button id="modal-confirm" class="px-6 py-2 bg-blue-600 text-white font-bold rounded-lg shadow active:bg-blue-700">Save</button>
+                <button class="modal-close px-4 py-2.5 btn-secondary text-sm rounded-lg">Cancel</button>
+                <button id="modal-confirm" class="px-6 py-2.5 btn-primary text-sm">Save</button>
             </div>
         </div>
     </div>
+
     <!-- Edit Item Modal -->
-    <div id="item-modal" class="fixed inset-0 bg-white z-50 hidden flex flex-col sm:inset-4 sm:rounded-xl sm:shadow-2xl sm:max-w-2xl sm:mx-auto sm:h-[85vh]">
+    <div id="item-modal" class="fixed inset-0 bg-white z-50 hidden flex flex-col sm:inset-4 sm:rounded-2xl sm:shadow-2xl sm:max-w-2xl sm:mx-auto sm:h-[85vh]">
         <!-- Toolbar -->
-        <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center bg-white shrink-0 sm:rounded-t-xl safe-pt">
-            <button class="item-modal-close text-gray-500 p-2 -ml-2 active:bg-gray-100 rounded-lg font-medium">Cancel</button>
+        <div class="px-4 py-3.5 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-blue-50 to-purple-50 shrink-0 sm:rounded-t-2xl safe-pt">
+            <button class="item-modal-close icon-btn text-gray-500 hover:text-gray-700 font-medium">Cancel</button>
             <span class="font-bold text-gray-800" id="item-modal-title">Edit</span>
-            <button id="item-save" class="text-blue-600 font-bold p-2 -mr-2 active:bg-blue-50 rounded-lg">Done</button>
+            <button id="item-save" class="btn-primary text-sm py-1.5 px-4">Done</button>
         </div>
         
         <!-- Editor Area -->
-        <div class="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
+        <div class="flex-1 overflow-y-auto p-5 flex flex-col gap-5">
             <!-- AI Bar -->
             <div class="flex justify-end">
-                <button id="ai-assist-btn" class="text-xs bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5 font-bold tracking-wide transform active:scale-95 transition-all">
+                <button id="ai-assist-btn" class="text-xs bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-4 py-2 rounded-full shadow-md hover:shadow-lg flex items-center gap-2 font-bold tracking-wide btn-press">
                     <i class="fas fa-magic"></i> AI Assist
                     <i class="fas fa-spinner fa-spin hidden" id="ai-loader"></i>
                 </button>
             </div>
-            <input type="text" id="item-heading-input" class="w-full text-2xl font-bold placeholder-gray-300 border-none focus:ring-0 p-0" placeholder="Title">
+            <input type="text" id="item-heading-input" class="w-full text-2xl md:text-3xl font-bold placeholder-gray-300 border-none focus:ring-0 p-0 focus:outline-none" placeholder="Title">
             
-            <div class="flex items-center gap-2 text-gray-400 border-b border-gray-100 pb-2">
+            <div class="flex items-center gap-2 text-gray-400 border-b border-gray-200 pb-2.5">
                 <i class="fas fa-hashtag text-sm"></i>
-                <input type="text" id="item-tags-input" class="w-full text-sm border-none focus:ring-0 p-0 placeholder-gray-300" placeholder="Tags (e.g. ideas, work)">
+                <input type="text" id="item-tags-input" class="w-full text-sm border-none focus:ring-0 p-0 placeholder-gray-300 focus:outline-none" placeholder="Tags (e.g. ideas, work)">
             </div>
-            <textarea id="item-textarea" class="w-full flex-1 resize-none border-none focus:ring-0 p-0 text-base leading-relaxed placeholder-gray-300" placeholder="Start typing..."></textarea>
+            <textarea id="item-textarea" class="w-full flex-1 resize-none border-none focus:ring-0 p-0 text-base leading-relaxed placeholder-gray-300 focus:outline-none" placeholder="Start typing..."></textarea>
         </div>
     </div>
+
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-xl z-[60] hidden flex items-center gap-3 transition-all duration-300 min-w-[200px] justify-center">
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900/95 backdrop-blur text-white px-6 py-3.5 rounded-full shadow-xl z-[60] hidden flex items-center gap-3 transition-all duration-300 min-w-[220px] justify-center modal-fade">
         <i class="fas fa-check-circle text-green-400"></i>
         <span id="toast-message" class="font-medium text-sm">Saved</span>
     </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -534,13 +850,11 @@
             els.folderList.innerHTML = "";
             appData.folders.forEach(folder => {
                 const div = document.createElement("div");
-                div.className = `p-3 rounded-lg cursor-pointer transition ${
-                    currentFolderId === folder.id
-                        ? "bg-blue-100 text-blue-900 font-semibold"
-                        : "bg-white text-gray-700 hover:bg-gray-100"
+                div.className = `folder-item ${
+                    currentFolderId === folder.id ? "active" : ""
                 }`;
                 div.innerHTML = `
-                    <div class="font-medium truncate">${folder.name}</div>
+                    <div class="font-semibold truncate text-sm">${folder.name}</div>
                     <div class="text-xs opacity-70 mt-1">${folder.items.length} items</div>
                 `;
                 div.addEventListener("click", () => selectFolder(folder.id));
@@ -559,15 +873,18 @@
                     // Render items
                     els.itemsContainer.innerHTML = "";
                     if (folder.items.length === 0) {
-                        els.itemsContainer.innerHTML = '<div class="text-center text-gray-400 py-12">No notes yet</div>';
+                        els.itemsContainer.innerHTML = '<div class="text-center text-gray-400 py-12">No notes yet. Create one to get started!</div>';
                     } else {
                         folder.items.forEach(item => {
                             const div = document.createElement("div");
-                            div.className = "bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer";
+                            div.className = "item-card";
                             div.innerHTML = `
-                                <div class="font-semibold text-gray-900 mb-1">${item.title || "Untitled"}</div>
-                                <div class="text-sm text-gray-500 line-clamp-2">${item.content || "No description"}</div>
-                                <div class="text-xs text-gray-400 mt-2">${new Date(item.createdAt).toLocaleDateString()}</div>
+                                <div class="font-semibold text-gray-900 mb-2 text-sm md:text-base">${item.title || "Untitled"}</div>
+                                <div class="text-sm text-gray-500 line-clamp-2 mb-3">${item.content || "No description"}</div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">${new Date(item.createdAt).toLocaleDateString()}</span>
+                                    ${item.tags && item.tags.length > 0 ? `<span class="text-xs text-blue-600 font-medium">${item.tags.length} tag${item.tags.length > 1 ? 's' : ''}</span>` : ''}
+                                </div>
                             `;
                             div.addEventListener("click", () => viewDetail(item.id));
                             els.itemsContainer.appendChild(div);
@@ -604,13 +921,13 @@
             els.detailView.classList.remove("hidden");
             els.detailHeading.textContent = item.title || "Untitled";
             els.detailContent.textContent = item.content || "";
-            els.detailDate.textContent = `Created ${new Date(item.createdAt).toLocaleDateString()}`;
+            els.detailDate.textContent = `✎ Last updated: ${new Date(item.createdAt).toLocaleString()}`;
             
             els.detailTags.innerHTML = "";
             (item.tags || []).forEach(tag => {
                 const span = document.createElement("span");
-                span.className = "bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium";
-                span.textContent = tag;
+                span.className = "tag";
+                span.innerHTML = `<i class="fas fa-hashtag"></i>${tag}`;
                 els.detailTags.appendChild(span);
             });
             
