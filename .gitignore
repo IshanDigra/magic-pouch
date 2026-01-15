@@ -1,0 +1,57 @@
+# Configuration & Secrets
+config.json
+.env
+.env.local
+.env.*.local
+config.*.json
+!config.example.json
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.eslintignore
+
+# Dependencies (if using build tools in future)
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+*.map
+.cache/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+.DS_Store
+.AppleDouble
+.LSOverride
+desktop.ini
+
+# Backups
+*.bak
+*.backup
+*~
+
+# Local development
+localhost/
+.local/
