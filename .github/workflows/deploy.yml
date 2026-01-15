@@ -21,7 +21,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
@@ -62,15 +62,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
-
-      - name: Setup Python Runtime
-        uses: actions/setup-python@0b93645e9e0d20f5389568df8d99ddcd487b521d # v5.0.0
-        with:
-          python-version: '3.11'
-          cache: 'pip'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -80,6 +74,7 @@ jobs:
           echo "✓ Build environment prepared"
           echo "✓ GitHub Pages source: GitHub Actions"
           echo "✓ Deployment target: https://IshanDigra.github.io/magic-pouch"
+          echo "✓ Python 3 available: $(python3 --version)"
 
       - name: Build Application
         run: |
