@@ -269,6 +269,13 @@
             transform: translateY(-2px);
         }
 
+        /* Highlight search matches */
+        .search-highlight {
+            background-color: #fef08a;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
         /* Header Glassmorphism */
         .header-glass {
             background: rgba(255, 255, 255, 0.95);
@@ -630,7 +637,7 @@
         let currentFolderId = null;
         let viewMode = "LIST";
         let currentDetailItemId = null;
-        let isSearching = false;
+        let searchQuery = "";
         
         // DOM elements
         const els = {
@@ -716,6 +723,40 @@
             els.sidebarOverlay.classList.add("hidden");
         });
         
+        // Mobile search toggle
+        els.mobileSearchToggle.addEventListener("click", () => {
+            els.mobileSearchBar.classList.toggle("hidden");
+            if (!els.mobileSearchBar.classList.contains("hidden")) {
+                els.mobileSearchInput.focus();
+            }
+        });
+
+        // Search functionality
+        function performSearch(query) {
+            searchQuery = query.toLowerCase().trim();
+            refreshUI();
+        }
+
+        // Desktop search
+        els.searchInput.addEventListener("input", (e) => {
+            performSearch(e.target.value);
+        });
+
+        // Mobile search
+        els.mobileSearchInput.addEventListener("input", (e) => {
+            performSearch(e.target.value);
+        });
+
+        function matchesSearch(item) {
+            if (!searchQuery) return true;
+            
+            const titleMatch = item.title.toLowerCase().includes(searchQuery);
+            const contentMatch = item.content.toLowerCase().includes(searchQuery);
+            const tagsMatch = item.tags && item.tags.some(tag => tag.toLowerCase().includes(searchQuery));
+            
+            return titleMatch || contentMatch || tagsMatch;
+        }
+        
         async function init() {
             const ok = await loadConfig();
             if (!ok) return;
@@ -795,6 +836,9 @@
             appData.folders = appData.folders.filter(f => f.id !== folderId);
             currentFolderId = null;
             viewMode = "LIST";
+            searchQuery = "";
+            els.searchInput.value = "";
+            els.mobileSearchInput.value = "";
             saveData();
         }
         
@@ -870,12 +914,18 @@
                     els.emptyState.classList.add("hidden");
                     els.addItemBtn.classList.remove("hidden");
                     
+                    // Filter items based on search
+                    const filteredItems = folder.items.filter(matchesSearch);
+                    
                     // Render items
                     els.itemsContainer.innerHTML = "";
-                    if (folder.items.length === 0) {
-                        els.itemsContainer.innerHTML = '<div class="text-center text-gray-400 py-12">No notes yet. Create one to get started!</div>';
+                    if (filteredItems.length === 0) {
+                        const message = searchQuery 
+                            ? `No notes match "${searchQuery}"`
+                            : 'No notes yet. Create one to get started!';
+                        els.itemsContainer.innerHTML = `<div class="text-center text-gray-400 py-12">${message}</div>`;
                     } else {
-                        folder.items.forEach(item => {
+                        filteredItems.forEach(item => {
                             const div = document.createElement("div");
                             div.className = "item-card";
                             div.innerHTML = `
@@ -903,6 +953,9 @@
         function selectFolder(folderId) {
             currentFolderId = folderId;
             viewMode = "LIST";
+            searchQuery = "";
+            els.searchInput.value = "";
+            els.mobileSearchInput.value = "";
             refreshUI();
             els.sidebar.classList.add("-translate-x-full");
             els.sidebarOverlay.classList.add("hidden");
