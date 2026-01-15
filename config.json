@@ -4,5 +4,77 @@
   "projectId": "magic-pouch",
   "storageBucket": "magic-pouch.firebasestorage.app",
   "messagingSenderId": "816300585480",
-  "appId": "1:816300585480:web:0ead89292305defb2c97bd"
+  "appId": "1:816300585480:web:0ead89292305defb2c97bd",
+  "firewall": {
+    "enabled": true,
+    "rules": {
+      "blockMaliciousPatterns": true,
+      "validateOrigin": true,
+      "rateLimitEnabled": true,
+      "corsEnabled": true
+    },
+    "rateLimiting": {
+      "requestsPerMinute": 60,
+      "requestsPerHour": 1000,
+      "burstLimit": 10
+    },
+    "cors": {
+      "allowedOrigins": [
+        "https://IshanDigra.github.io",
+        "https://magic-pouch.firebaseapp.com",
+        "http://localhost:3000",
+        "http://localhost:5000"
+      ],
+      "allowedMethods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      "allowCredentials": true
+    },
+    "contentSecurity": {
+      "allowScripts": true,
+      "allowStyles": true,
+      "allowFonts": true,
+      "blockExternalResources": false,
+      "enableSubresourceIntegrity": true
+    },
+    "securityHeaders": {
+      "strictTransportSecurity": "max-age=31536000; includeSubDomains",
+      "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.firebase.com; style-src 'self' 'unsafe-inline'",
+      "referrerPolicy": "strict-origin-when-cross-origin",
+      "xContentTypeOptions": "nosniff",
+      "xFrameOptions": "SAMEORIGIN"
+    },
+    "whitelistedDomains": [
+      "magic-pouch.firebaseapp.com",
+      "magic-pouch.firebasestorage.app",
+      "IshanDigra.github.io"
+    ],
+    "blocklistPatterns": [
+      "(?i)(eval|script|iframe|onerror|onload)",
+      "(?i)(union.*select|drop.*table|insert.*into)",
+      "(?i)(<script|javascript:|onerror=|onclick=)"
+    ],
+    "logging": {
+      "enabled": true,
+      "logLevel": "info",
+      "logSecurityEvents": true,
+      "logRateLimitViolations": true
+    }
+  },
+  "environment": {
+    "production": {
+      "firewall": {
+        "strict": true,
+        "enabled": true
+      },
+      "https": true,
+      "contentSecurityPolicyStrict": true
+    },
+    "development": {
+      "firewall": {
+        "strict": false,
+        "enabled": true
+      },
+      "https": false,
+      "allowLocalhost": true
+    }
+  }
 }
