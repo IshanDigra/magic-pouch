@@ -295,24 +295,67 @@
         let db = null;
         
         async function loadConfig() {
+            console.log('Loading Firebase configuration...');
             try {
-                const response = await fetch('config.json');
-                if (!response.ok) throw new Error('config.json not found');
-                firebaseConfig = await response.json();
-            } catch (e) {
-                console.warn('config.json not found. Using window.__firebase_config if available.');
-                if (typeof window.__firebase_config !== 'undefined') {
-                    firebaseConfig = JSON.parse(window.__firebase_config);
-                } else {
-                    alert('Firebase configuration not found. Please add config.json');
-                    return false;
+                // Try multiple paths for config.json
+                const paths = ['./config.json', '/config.json', '../config.json'];
+                let response = null;
+                
+                for (const path of paths) {
+                    try {
+                        console.log(`Attempting to load config from: ${path}`);
+                        response = await fetch(path, { 
+                            method: 'GET',
+                            headers: { 'Accept': 'application/json' },
+                            cache: 'no-cache'
+                        });
+                        if (response.ok) {
+                            console.log(`Successfully loaded config from: ${path}`);
+                            firebaseConfig = await response.json();
+                            console.log('Firebase config loaded:', Object.keys(firebaseConfig));
+                            return true;
+                        }
+                    } catch (e) {
+                        console.log(`Failed to load from ${path}:`, e.message);
+                    }
                 }
+                
+                throw new Error('config.json not found in any expected location');
+            } catch (e) {
+                console.warn('Failed to load config.json. Checking for alternative config sources...');
+                
+                // Try window.__firebase_config
+                if (typeof window.__firebase_config !== 'undefined') {
+                    console.log('Using window.__firebase_config');
+                    firebaseConfig = JSON.parse(window.__firebase_config);
+                    return true;
+                }
+                
+                // Try environment variables (for hosting platforms)
+                if (typeof process !== 'undefined' && process.env) {
+                    const configStr = process.env.REACT_APP_FIREBASE_CONFIG || process.env.FIREBASE_CONFIG;
+                    if (configStr) {
+                        try {
+                            firebaseConfig = JSON.parse(configStr);
+                            console.log('Using environment variable config');
+                            return true;
+                        } catch (parseError) {
+                            console.warn('Failed to parse environment config:', parseError);
+                        }
+                    }
+                }
+                
+                // Final fallback - show detailed error
+                console.error('No Firebase configuration found!');
+                const errorMsg = 'Firebase configuration not found.\n\n' +
+                    'Please ensure config.json exists in the root directory with your Firebase credentials.\n\n' +
+                    'Steps:\n' +
+                    '1. Create config.json in repository root\n' +
+                    '2. Hard refresh browser (Ctrl+Shift+R)\n' +
+                    '3. Check browser console for details';
+                alert(errorMsg);
+                return false;
             }
-            
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            return true;
         }
         
         const appId = 'snippet-keeper';
@@ -395,7 +438,17 @@
                 }
             };
             
-            await initAuth();
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                await initAuth();
+            } catch (initError) {
+                console.error('Firebase initialization error:', initError);
+                alert('Failed to initialize Firebase. Check console for details.');
+                return;
+            }
+            
             onAuthStateChanged(auth, (user) => {
                 currentUser = user;
                 if (user) setupFirestoreSync();
