@@ -1,10 +1,10 @@
 {
-  "apiKey": "AIzaSyD3GZnCEWotlYVHElhh3c5RmCKYjzSdhX8",
-  "authDomain": "magic-pouch.firebaseapp.com",
-  "projectId": "magic-pouch",
-  "storageBucket": "magic-pouch.firebasestorage.app",
-  "messagingSenderId": "816300585480",
-  "appId": "1:816300585480:web:0ead89292305defb2c97bd",
+  "apiKey": "__FIREBASE_API_KEY__",
+  "authDomain": "__FIREBASE_AUTH_DOMAIN__",
+  "projectId": "__FIREBASE_PROJECT_ID__",
+  "storageBucket": "__FIREBASE_STORAGE_BUCKET__",
+  "messagingSenderId": "__FIREBASE_MESSAGING_SENDER_ID__",
+  "appId": "__FIREBASE_APP_ID__",
   "firewall": {
     "enabled": true,
     "rules": {
