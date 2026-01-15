@@ -311,6 +311,23 @@
         <span id="toast-message" class="font-medium text-sm">Saved</span>
     </div>
 
+    <!-- Firebase Config Injection (Hardcoded for Testing) -->
+    <script>
+        // Hardcoded Firebase Configuration from .env.local
+        // TODO: Move to secure environment variables in production
+        window.__firebase_config = JSON.stringify({
+            apiKey: "AIzaSyD3GZnCEWotlYVHElhh3c5RmCKYjzSdhX8",
+            authDomain: "magic-pouch.firebaseapp.com",
+            projectId: "magic-pouch",
+            storageBucket: "magic-pouch.firebasestorage.app",
+            messagingSenderId: "816300585480",
+            appId: "1:816300585480:web:0ead89292305defb2c97bd"
+        });
+        
+        // Optional: Gemini API Key (if testing AI features)
+        window.__gemini_api_key = ""; // Add your Gemini API key here when ready
+    </script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
