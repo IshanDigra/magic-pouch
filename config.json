@@ -1,8 +1,8 @@
 {
-  apiKey: "AIzaSyD3GZnCEWotlYVHElhh3c5RmCKYjzSdhX8",
-  authDomain: "magic-pouch.firebaseapp.com",
-  projectId: "magic-pouch",
-  storageBucket: "magic-pouch.firebasestorage.app",
-  messagingSenderId: "816300585480",
-  appId: "1:816300585480:web:0ead89292305defb2c97bd"
+  "apiKey": "AIzaSyD3GZnCEWotlYVHElhh3c5RmCKYjzSdhX8",
+  "authDomain": "magic-pouch.firebaseapp.com",
+  "projectId": "magic-pouch",
+  "storageBucket": "magic-pouch.firebasestorage.app",
+  "messagingSenderId": "816300585480",
+  "appId": "1:816300585480:web:0ead89292305defb2c97bd"
 }
